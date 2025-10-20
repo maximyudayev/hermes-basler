@@ -5,14 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Local Template",
+      "name": "Local Basler",
       "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "program": "hermes-cli",
       "args": [
-        "--experiment", "project=Test", "type=Template", "trial=0",
-        "--config_file", "examples/test.yml",
+        "--experiment", "project=Test", "type=Cameras", "trial=0",
+        "--config_file", "examples/cameras.yml",
         "--out_file", "examples/"
       ],
       "env": {
