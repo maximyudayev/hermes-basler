@@ -25,53 +25,7 @@
 #
 # ############
 
+from hermes.cli import app
 
-host_ip : "127.0.0.1"
-is_master_broker: True
-
-remote_subscriber_ips: []
-remote_publisher_ips: []
-
-is_remote_kill: False
-remote_kill_ip: null
-
-
-logging_spec:
-  stream_period_s     : 30
-  
-  stream_hdf5         : True
-  stream_csv          : False
-  stream_video        : True
-  stream_audio        : False
-
-  dump_csv            : False
-  dump_hdf5           : False
-  dump_video          : False
-  dump_audio          : False
-
-  video_codec_config_filepath : "examples/video_codec.yml" 
-  video_codec_num_cpu : 1
-
-  audio_codec_config_filepath : "examples/audio_codec.yml" 
-  audio_codec_num_cpu : 1
-
-
-producer_specs:
-  - package: "basler"
-    class: "CameraProducer"
-    settings:
-      camera_mapping: # map camera names (usable as device names in the HDF5 file) to capture device indices.
-        n1: "40478064"
-        n2: "40549960"
-        n3: "40549975"
-        n4: "40549976"
-      fps: 30
-      resolution:
-        - 1440
-        - 2560
-
-
-consumer_specs: []
-
-
-pipeline_specs: []
+if __name__ == "__main__":
+  app()

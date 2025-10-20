@@ -9,11 +9,11 @@
       "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "program": "hermes-cli",
+      "program": "examples/main.py",
       "args": [
         "--experiment", "project=Test", "type=Cameras", "trial=0",
         "--config_file", "examples/cameras.yml",
-        "--out_file", "examples/"
+        "--out_dir", "examples/"
       ],
       "env": {
         "PYTHONPATH": "${workspaceFolder}"
