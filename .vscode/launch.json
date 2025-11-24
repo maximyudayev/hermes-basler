@@ -13,7 +13,7 @@
       "args": [
         "--experiment", "project=Test", "type=Cameras", "trial=0",
         "--config_file", "examples/cameras.yml",
-        "--out_dir", "examples/"
+        "--out_dir", "examples/data"
       ],
       "env": {
         "PYTHONPATH": "${workspaceFolder}"
