@@ -21,7 +21,7 @@ Physical connection requires a PCIe PoE NIC, like the [one distributed by Basler
 
 Configure the cameras in the [Pylon Viewer](https://www.baslerweb.com/en/software/pylon/pylon-viewer/) application once, to ensure the camera settings are set to reach the desired frame rate and resolution. Save the settings as a "User Set" for the cameras to autoload the preset. 
 
-Using the device follows the standard [configuration file specification](https://maximyudayev.github.io/hermes/) process of HERMES nodes.
+Using the device follows the standard [configuration file specification](https://yudayev.com/hermes) process of HERMES nodes.
 
 ## Citation
 When using any parts of this repository outside of its intended use, please cite the parent project [HERMES](https://github.com/maximyudayev/hermes).
