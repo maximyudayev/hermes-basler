@@ -43,12 +43,9 @@ from hermes.basler.handler import ImageEventHandler
 class CameraProducer(Producer):
     """A class for streaming videos from Basler PoE cameras."""
 
-    @classmethod
-    def _log_source_tag(cls) -> str:
-        return "cameras"
-
     def __init__(
         self,
+        topic: str,
         host_ip: str,
         logging_spec: LoggingSpec,
         camera_mapping: dict[str, str],
@@ -94,6 +91,7 @@ class CameraProducer(Producer):
         }
 
         super().__init__(
+            topic=topic,
             host_ip=host_ip,
             stream_out_spec=stream_out_spec,
             logging_spec=logging_spec,
@@ -205,7 +203,7 @@ class CameraProducer(Producer):
     ) -> None:
         process_time_s = get_time()
         tag: str = "%s.%s.data" % (
-            self._log_source_tag(),
+            self.topic,
             self._camera_mapping[camera_id],
         )
         data = {

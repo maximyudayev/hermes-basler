@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysio-hermes-basler"
-dynamic = ["version"]
+version = "0.0.2"
 requires-python = ">=3.7"
 authors = [
   { name="Maxim Yudayev", email="maxim.yudayev@gmail.com" },
@@ -29,12 +29,9 @@ classifiers = [
   "Topic :: System :: Distributed Computing"
 ]
 dependencies = [
-  "pysio-hermes",
+  "pysio-hermes>=0.3.0",
   "pypylon"
 ]
-
-[tool.setuptools.dynamic]
-version = {attr = "hermes.basler.__version__.__version__"}
 
 [project.urls]
 Homepage = "https://yudayev.com/hermes"

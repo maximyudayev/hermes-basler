@@ -26,7 +26,7 @@
 # ############
 
 
-host_ip : "127.0.0.1"
+host_ip: "127.0.0.1"
 is_master_broker: True
 
 remote_subscriber_ips: []
@@ -38,8 +38,8 @@ remote_kill_ip: null
 
 
 logging_spec:
-  stream_period_s     : 30
-  
+  stream_period_s     : 1
+
   stream_hdf5         : True
   stream_csv          : False
   stream_video        : True
@@ -50,13 +50,14 @@ logging_spec:
   dump_video          : False
   dump_audio          : False
 
-video_codec_config_filepath : "examples/video_codec_nvidia.yml"
-audio_codec_config_filepath : null
+video_codec_config_filepath: "examples/video_codec_nvidia.yml"
+audio_codec_config_filepath: null
 
 
 producer_specs:
   - package: "basler"
     class: "CameraProducer"
+    topic: "basler"
     settings:
       camera_mapping: # map camera names (usable as device names in the HDF5 file) to capture device indices.
         n1: "40478064"
