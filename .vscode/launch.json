@@ -11,9 +11,9 @@
       "cwd": "${workspaceFolder}",
       "program": "examples/main.py",
       "args": [
-        "--experiment", "project=Test", "type=Cameras", "trial=0",
-        "--config_file", "examples/cameras.yml",
-        "--out_dir", "examples/data"
+        "-e", "project=Test", "type=Cameras", "trial=0",
+        "-f", "examples/cameras.yml",
+        "-o", "examples/data"
       ],
       "env": {
         "PYTHONPATH": "${workspaceFolder}"

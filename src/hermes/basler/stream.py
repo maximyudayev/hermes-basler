@@ -26,6 +26,7 @@
 # ############
 
 from collections import OrderedDict
+from typing import Iterable, Optional
 
 from hermes.base.stream import Stream
 from hermes.utils.types import VideoFormatEnum
@@ -38,10 +39,11 @@ class CameraStream(Stream):
         self,
         camera_mapping: dict[str, str],
         fps: float,
-        resolution: tuple[int],
-        timesteps_before_solidified: int = 0,
-        update_interval_ms: int = 100,
-        **_
+        resolution: Iterable[int],
+        buf_len: Optional[int] = 1000,
+        timesteps_before_solidified: Optional[int] = 0,
+        update_interval_ms: Optional[int] = 100,
+        **_,
     ) -> None:
         super().__init__()
 
@@ -63,6 +65,7 @@ class CameraStream(Stream):
                 color_format=VideoFormatEnum.BAYER_RG8,
                 data_type="uint8",
                 sample_size=resolution,
+                buf_len=buf_len,
                 sampling_rate_hz=fps,
                 is_measure_rate_hz=True,
                 data_notes=self._data_notes[camera_id]["frame"],
@@ -71,24 +74,27 @@ class CameraStream(Stream):
             self.add_stream(
                 device_name=camera_id,
                 stream_name="frame_timestamp",
-                data_type="float64",
+                data_type="uint64",
                 sample_size=[1],
+                buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["frame_timestamp"],
             )
             self.add_stream(
                 device_name=camera_id,
                 stream_name="frame_index",
-                data_type="float64",
+                data_type="uint64",
                 sample_size=[1],
+                buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["frame_index"],
             )
             self.add_stream(
                 device_name=camera_id,
                 stream_name="frame_sequence_id",
-                data_type="float64",
+                data_type="uint64",
                 sample_size=[1],
+                buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["frame_sequence_id"],
             )
@@ -97,6 +103,7 @@ class CameraStream(Stream):
                 stream_name="toa_s",
                 data_type="float64",
                 sample_size=[1],
+                buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["toa_s"],
             )

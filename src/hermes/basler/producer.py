@@ -26,6 +26,7 @@
 # ############
 
 import time
+from typing import Optional
 
 from hermes.utils.types import LoggingSpec
 import numpy as np
@@ -51,12 +52,13 @@ class CameraProducer(Producer):
         camera_mapping: dict[str, str],
         fps: float,
         resolution: tuple[int],
-        pylon_max_buffer_size: int = 10,
-        port_pub: str = PORT_BACKEND,
-        port_sync: str = PORT_SYNC_HOST,
-        port_killsig: str = PORT_KILL,
-        transmit_delay_sample_period_s: float = float("nan"),
-        timesteps_before_solidified: int = 0,
+        buf_len: Optional[int] = 1000,
+        pylon_max_buffer_size: Optional[int] = 10,
+        port_pub: Optional[str] = PORT_BACKEND,
+        port_sync: Optional[str] = PORT_SYNC_HOST,
+        port_killsig: Optional[str] = PORT_KILL,
+        transmit_delay_sample_period_s: Optional[float] = float("nan"),
+        timesteps_before_solidified: Optional[int] = 0,
         **_,
     ):
         """Constructor of the Basler camera Node.
@@ -67,6 +69,7 @@ class CameraProducer(Producer):
             camera_mapping (dict[str, str]): Mapping camera names to device indices.
             fps (float): Frame rate of the video in frames-per-second.
             resolution (tuple[int]): Captured image frame size.
+            buf_len (int, optional): Length of preallocated memory for the `Stream` object. Defaults to `1000`.
             pylon_max_buffer_size (int, optional): Maximum number of frames to buffer by the kernel driver of the Basler backend. Defaults to `10`.
             port_pub (str, optional): Local port to publish to for local master Broker to relay. Defaults to `PORT_BACKEND`.
             port_sync (str, optional): Local port to listen to for local master Broker's startup coordination. Defaults to `PORT_SYNC_HOST`.
@@ -87,6 +90,7 @@ class CameraProducer(Producer):
             "camera_mapping": camera_mapping,
             "fps": fps,
             "resolution": resolution,
+            "buf_len": buf_len,
             "timesteps_before_solidified": timesteps_before_solidified,
         }
 
@@ -194,7 +198,7 @@ class CameraProducer(Producer):
     def _process_frame(
         self,
         camera_id: str,
-        frame_buffer: bytes,
+        frame_buffer: np.ndarray,
         is_keyframe: bool,
         frame_index: np.uint64,
         timestamp: np.uint64,
@@ -207,11 +211,11 @@ class CameraProducer(Producer):
             self._camera_mapping[camera_id],
         )
         data = {
-            "frame_timestamp": timestamp,
-            "frame_index": frame_index,
-            "frame_sequence_id": sequence_id,
-            "frame": (frame_buffer, is_keyframe, frame_index),
-            "toa_s": toa_s,
+            "frame_timestamp": np.array([timestamp], dtype=np.uint64),
+            "frame_index": np.array([frame_index], dtype=np.uint64),
+            "frame_sequence_id": np.array([sequence_id], dtype=np.uint64),
+            "frame": frame_buffer,
+            "toa_s": np.array([toa_s], dtype=np.float64),
         }
         self._publish(tag=tag, process_time_s=process_time_s, data={camera_id: data})
 

@@ -68,6 +68,7 @@ producer_specs:
       resolution:
         - 1440
         - 2560
+      buf_len: 1000
 
 
 consumer_specs: []
