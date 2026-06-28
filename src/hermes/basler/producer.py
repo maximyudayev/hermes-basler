@@ -37,7 +37,7 @@ from hermes.utils.time_utils import get_time
 from hermes.utils.zmq_utils import PORT_BACKEND, PORT_KILL, PORT_SYNC_HOST
 from hermes.base.nodes.producer import Producer
 
-from hermes.basler.stream import CameraStream
+from hermes.basler.data_container import CameraDataContainer
 from hermes.basler.handler import ImageEventHandler
 
 
@@ -52,7 +52,7 @@ class CameraProducer(Producer):
         camera_mapping: dict[str, str],
         fps: float,
         resolution: tuple[int],
-        buf_len: Optional[int] = 1000,
+        buf_len: Optional[int] = 300,
         pylon_max_buffer_size: Optional[int] = 10,
         port_pub: Optional[str] = PORT_BACKEND,
         port_sync: Optional[str] = PORT_SYNC_HOST,
@@ -69,7 +69,7 @@ class CameraProducer(Producer):
             camera_mapping (dict[str, str]): Mapping camera names to device indices.
             fps (float): Frame rate of the video in frames-per-second.
             resolution (tuple[int]): Captured image frame size.
-            buf_len (int, optional): Length of preallocated memory for the `Stream` object. Defaults to `1000`.
+            buf_len (int, optional): Length of preallocated memory for the `DataContainer` object. Defaults to `1000`.
             pylon_max_buffer_size (int, optional): Maximum number of frames to buffer by the kernel driver of the Basler backend. Defaults to `10`.
             port_pub (str, optional): Local port to publish to for local master Broker to relay. Defaults to `PORT_BACKEND`.
             port_sync (str, optional): Local port to listen to for local master Broker's startup coordination. Defaults to `PORT_SYNC_HOST`.
@@ -86,7 +86,7 @@ class CameraProducer(Producer):
         self._get_frame_fn = self._get_frame
         self._stop_time_s = float("nan")
 
-        stream_out_spec = {
+        data_out_spec = {
             "camera_mapping": camera_mapping,
             "fps": fps,
             "resolution": resolution,
@@ -97,7 +97,7 @@ class CameraProducer(Producer):
         super().__init__(
             topic=topic,
             host_ip=host_ip,
-            stream_out_spec=stream_out_spec,
+            data_out_spec=data_out_spec,
             logging_spec=logging_spec,
             sampling_rate_hz=fps,
             port_pub=port_pub,
@@ -107,8 +107,8 @@ class CameraProducer(Producer):
         )
 
     @classmethod
-    def create_stream(cls, stream_spec: dict) -> CameraStream:
-        return CameraStream(**stream_spec)
+    def create_data_container(cls, data_spec: dict) -> CameraDataContainer:
+        return CameraDataContainer(**data_spec)
 
     def _ping_device(self) -> None:
         return None

@@ -39,6 +39,7 @@ remote_kill_ip: null
 
 logging_spec:
   stream_period_s     : 1
+  is_quiet            : False
 
   stream_hdf5         : True
   stream_csv          : False
@@ -68,7 +69,7 @@ producer_specs:
       resolution:
         - 1440
         - 2560
-      buf_len: 1000
+      buf_len: 300
 
 
 consumer_specs: []

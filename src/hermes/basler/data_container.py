@@ -28,19 +28,19 @@
 from collections import OrderedDict
 from typing import Iterable, Optional
 
-from hermes.base.stream import Stream
+from hermes.base.data_container import DataContainer
 from hermes.utils.types import VideoFormatEnum
 
 
-class CameraStream(Stream):
-    """A structure to store Camera stream's data."""
+class CameraDataContainer(DataContainer):
+    """A structure to store Camera Node's data."""
 
     def __init__(
         self,
         camera_mapping: dict[str, str],
         fps: float,
         resolution: Iterable[int],
-        buf_len: Optional[int] = 1000,
+        buf_len: Optional[int] = 300,
         timesteps_before_solidified: Optional[int] = 0,
         update_interval_ms: Optional[int] = 100,
         **_,
@@ -58,9 +58,9 @@ class CameraStream(Stream):
 
         # Add a streams for each asynchronous camera.
         for camera_id, camera_name in self._camera_mapping.items():
-            self.add_stream(
-                device_name=camera_id,
-                stream_name="frame",
+            self.add_channel(
+                bundle_name=camera_id,
+                channel_name="frame",
                 is_video=True,
                 color_format=VideoFormatEnum.BAYER_RG8,
                 data_type="uint8",
@@ -71,36 +71,36 @@ class CameraStream(Stream):
                 data_notes=self._data_notes[camera_id]["frame"],
                 timesteps_before_solidified=self._timesteps_before_solidified,
             )
-            self.add_stream(
-                device_name=camera_id,
-                stream_name="frame_timestamp",
+            self.add_channel(
+                bundle_name=camera_id,
+                channel_name="frame_timestamp",
                 data_type="uint64",
                 sample_size=[1],
                 buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["frame_timestamp"],
             )
-            self.add_stream(
-                device_name=camera_id,
-                stream_name="frame_index",
+            self.add_channel(
+                bundle_name=camera_id,
+                channel_name="frame_index",
                 data_type="uint64",
                 sample_size=[1],
                 buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["frame_index"],
             )
-            self.add_stream(
-                device_name=camera_id,
-                stream_name="frame_sequence_id",
+            self.add_channel(
+                bundle_name=camera_id,
+                channel_name="frame_sequence_id",
                 data_type="uint64",
                 sample_size=[1],
                 buf_len=buf_len,
                 sampling_rate_hz=fps,
                 data_notes=self._data_notes[camera_id]["frame_sequence_id"],
             )
-            self.add_stream(
-                device_name=camera_id,
-                stream_name="toa_s",
+            self.add_channel(
+                bundle_name=camera_id,
+                channel_name="toa_s",
                 data_type="float64",
                 sample_size=[1],
                 buf_len=buf_len,
@@ -122,7 +122,7 @@ class CameraStream(Stream):
             self._data_notes[camera_id]["frame"] = OrderedDict(
                 [
                     ("Serial Number", camera_id),
-                    (Stream.metadata_data_headings_key, camera_name),
+                    (DataContainer.metadata_data_headings_key, camera_name),
                 ]
             )
             self._data_notes[camera_id]["frame_timestamp"] = OrderedDict(
