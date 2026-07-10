@@ -62,7 +62,7 @@ class CameraDataContainer(DataContainer):
                 bundle_name=camera_id,
                 channel_name="frame",
                 is_video=True,
-                color_format=VideoFormatEnum.BAYER_RG8,
+                video_format=VideoFormatEnum.BAYER_RG8,
                 data_type="uint8",
                 sample_size=resolution,
                 buf_len=buf_len,

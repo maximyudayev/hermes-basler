@@ -72,7 +72,6 @@ class ImageEventHandler(pylon.ImageEventHandler):
                     res.Release()
                 else:
                     toa_s: float = get_time()
-                    frame_buffer: np.ndarray = res.GetArrayZeroCopy()
                     camera_id: str = str(camera.GetDeviceInfo().GetSerialNumber())
                     timestamp: np.uint64 = np.uint64(res.GetTimeStamp())
                     sequence_id: np.uint64 = np.uint64(res.GetImageNumber())
@@ -85,18 +84,19 @@ class ImageEventHandler(pylon.ImageEventHandler):
                     # If there are any skipped images in between, it will take encoder a lot of processing.
                     #   Mark the frame as keyframe so it encodes the frame as a whole, not differentially.
                     is_keyframe: bool = res.GetNumberOfSkippedImages() > 0
-                    # Put the newly allocated converted image into our queue/pipe for Streamer to consume.
-                    self._queue.put(
-                        (
-                            camera_id,
-                            frame_buffer,
-                            is_keyframe,
-                            frame_index,
-                            timestamp,
-                            sequence_id,
-                            toa_s,
+                    # Put the newly allocated converted image into our queue/pipe for the Producer to consume.
+                    with res.GetArrayZeroCopy() as frame_buffer:
+                        self._queue.put(
+                            (
+                                camera_id,
+                                frame_buffer[None],
+                                is_keyframe,
+                                frame_index,
+                                timestamp,
+                                sequence_id,
+                                toa_s,
+                            )
                         )
-                    )
                     # Release the buffer for Pylon to reuse for the next frame.
                     res.Release()
             else:
