@@ -46,7 +46,7 @@ class CameraProducer(Producer):
 
     def __init__(
         self,
-        topic: str,
+        node_id: str,
         host_ip: str,
         logging_spec: LoggingSpec,
         camera_mapping: dict[str, str],
@@ -64,6 +64,7 @@ class CameraProducer(Producer):
         """Constructor of the Basler camera Node.
 
         Args:
+            node_id (str): Uniquely-identifiable user-assigned Node id.
             host_ip (str): IP address of the local master Broker.
             logging_spec (LoggingSpec): Mapping of Storage object parameters to user-defined configuration values.
             camera_mapping (dict[str, str]): Mapping camera names to device indices.
@@ -95,7 +96,7 @@ class CameraProducer(Producer):
         }
 
         super().__init__(
-            topic=topic,
+            node_id=node_id,
             host_ip=host_ip,
             data_out_spec=data_out_spec,
             logging_spec=logging_spec,
@@ -206,10 +207,6 @@ class CameraProducer(Producer):
         toa_s: float,
     ) -> None:
         process_time_s = get_time()
-        tag: str = "%s.%s.data" % (
-            self.topic,
-            self._camera_mapping[camera_id],
-        )
         data = {
             "frame_timestamp": np.array([timestamp], dtype=np.uint64),
             "frame_index": np.array([frame_index], dtype=np.uint64),
@@ -217,7 +214,7 @@ class CameraProducer(Producer):
             "frame": frame_buffer,
             "toa_s": np.array([toa_s], dtype=np.float64),
         }
-        self._publish(tag=tag, process_time_s=process_time_s, data={camera_id: data})
+        self._publish(process_time_s=process_time_s, new_data={camera_id: data})
 
     def _stop_new_data(self) -> None:
         # Stop capturing data.

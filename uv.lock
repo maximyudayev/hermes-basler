@@ -1809,8 +1809,8 @@ wheels = [
 
 [[package]]
 name = "pysio-hermes"
-version = "0.4.0"
-source = { registry = "https://pypi.org/simple" }
+version = "0.5.0"
+source = { git = "https://github.com/maximyudayev/hermes.git#a03e1402183d48a8a18ffea5c5d3145e29e06519" }
 dependencies = [
     { name = "ffmpeg-python" },
     { name = "h5py", version = "3.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.8'" },
@@ -1846,14 +1846,10 @@ dependencies = [
     { name = "pyzmq", version = "26.2.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.8'" },
     { name = "pyzmq", version = "27.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.8'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/50/33c9b57049e41d072b70742ded5b1d867b844a28c13e735945c78f01051a/pysio_hermes-0.4.0.tar.gz", hash = "sha256:4ffbecddc522d994b2c3dea25c22c91c3ccf651d0d163962c2f2dc0154009613", size = 82077, upload-time = "2026-06-16T20:28:20.373Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e2/6d/7b76eecf6ca850784eb0a12092d8da9a1563f9a111fc73d6b66da362c05b/pysio_hermes-0.4.0-py3-none-any.whl", hash = "sha256:183ebf768d9e5ec1824576116f98a87d92e41c8b67b72991722d83bbaae93b93", size = 120177, upload-time = "2026-06-16T20:28:21.54Z" },
-]
 
 [[package]]
 name = "pysio-hermes-basler"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "pypylon" },
@@ -1863,7 +1859,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "pypylon" },
-    { name = "pysio-hermes", specifier = ">=0.4.0" },
+    { name = "pysio-hermes", git = "https://github.com/maximyudayev/hermes.git" },
 ]
 
 [[package]]
