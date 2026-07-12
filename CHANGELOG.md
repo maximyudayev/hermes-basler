@@ -7,6 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.2.0](https://github.com/maximyudayev/hermes-basler/releases/tag/0.2.0) - 2026-07-12
+
+<small>[Compare with 0.1.0](https://github.com/maximyudayev/hermes-basler/compare/0.1.0...0.2.0)</small>
+
+### Features
+
+- Zero-copy image buffer into the IPC queue ([3290843](https://github.com/maximyudayev/hermes-basler/commit/32908431b6e7a8ab4342976e26b9eacc982b28f3) by Maxim Yudayev).
+
+### Misc
+
+- Chore: updated to match `HERMES>=0.5.0` ([7bbf488](7bbf4886743b1460c2e9e940307c00bdd20ad586) by Maxim Yudayev).
+- Hotfix: API compatibility to `HERMES==0.4.2` ([9ccec5d](https://github.com/maximyudayev/hermes-basler/commit/9ccec5deedd38f5734214b57cdf98a2dbfd87004) by Maxim Yudayev).
+
 ## [0.1.0](https://github.com/maximyudayev/hermes-basler/releases/tag/0.1.0) - 2026-06-17
 
 <small>[Compare with first commit](https://github.com/maximyudayev/hermes-basler/compare/940e7c36493da477bc723d232d597bd7565b1780...0.1.0)</small>
