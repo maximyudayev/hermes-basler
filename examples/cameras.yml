@@ -38,7 +38,7 @@ remote_kill_ip: null
 
 
 logging_spec:
-  stream_period_s     : 1
+  stream_period_s     : 5
   is_quiet            : False
 
   stream_hdf5         : True
@@ -58,18 +58,55 @@ audio_codec_config_filepath: null
 producer_specs:
   - package: "basler"
     class: "CameraProducer"
-    node_id: "basler"
+    node_id: "basler_cam1"
     settings:
       camera_mapping: # map camera names (usable as device names in the HDF5 file) to capture device indices.
         n1: "40478064"
-        n2: "40549960"
-        n3: "40549975"
-        n4: "40549976"
       fps: 30
+      pylon_max_buffer_size: 30
       resolution:
         - 1440
         - 2560
-      buf_len: 300
+      buf_len: 600
+
+  - package: "basler"
+    class: "CameraProducer"
+    node_id: "basler_cam2"
+    settings:
+      camera_mapping: # map camera names (usable as device names in the HDF5 file) to capture device indices.
+        n2: "40549960"
+      fps: 30
+      pylon_max_buffer_size: 30
+      resolution:
+        - 1440
+        - 2560
+      buf_len: 600
+
+  - package: "basler"
+    class: "CameraProducer"
+    node_id: "basler_cam3"
+    settings:
+      camera_mapping: # map camera names (usable as device names in the HDF5 file) to capture device indices.
+        n3: "40549975"
+      fps: 30
+      pylon_max_buffer_size: 30
+      resolution:
+        - 1440
+        - 2560
+      buf_len: 600
+
+  - package: "basler"
+    class: "CameraProducer"
+    node_id: "basler_cam4"
+    settings:
+      camera_mapping: # map camera names (usable as device names in the HDF5 file) to capture device indices.
+        n4: "40549976"
+      fps: 30
+      pylon_max_buffer_size: 30
+      resolution:
+        - 1440
+        - 2560
+      buf_len: 600
 
 
 consumer_specs: []

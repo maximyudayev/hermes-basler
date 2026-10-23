@@ -36,12 +36,9 @@ from hermes.utils.time_utils import get_time
 class ImageEventHandler(pylon.ImageEventHandler):
     """Basler background callback handler.
 
-    Does not align video streams according to timestamps,
-      they are captured synchronously on independent PoE interfaces -> no need.
-      That's why alignment is not necessary unlike IMUs.
-      Grabbed images from several devices pushed into single buffer, arbitrarily overlapping images.
-    NOTE: may be interesting to actually align them in a snapshot buffer, similar to IMUs,
-      To make multi-angle computer vision algorithms possible.
+    Grabbed images from all devices are pushed into a thread-safe queue
+    for the main CameraProducer thread to process. Cameras and host work on
+    different timebases.
     """
 
     def __init__(self, cam_array: pylon.InstantCameraArray):
@@ -56,7 +53,7 @@ class ImageEventHandler(pylon.ImageEventHandler):
             )
         self._start_sequence_id: OrderedDict[str, np.uint64] = OrderedDict(
             [(cam.GetDeviceInfo().GetSerialNumber(), None) for cam in cam_array]
-        )  # type: ignore
+        )
         self._queue: queue.Queue[
             tuple[str, np.ndarray, bool, np.uint64, np.uint64, np.uint64, float]
         ] = queue.Queue()
@@ -78,37 +75,36 @@ class ImageEventHandler(pylon.ImageEventHandler):
                     # Presentation time in the units of the timebase of the stream, w.r.t. the start of the video recording.
                     if self._start_sequence_id[camera_id] is None:
                         self._start_sequence_id[camera_id] = sequence_id
-                    frame_index = (
-                        sequence_id - self._start_sequence_id[camera_id]
-                    )  # NOTE: not safe against overflow, but uint64.
-                    # If there are any skipped images in between, it will take encoder a lot of processing.
-                    #   Mark the frame as keyframe so it encodes the frame as a whole, not differentially.
+                    frame_index = sequence_id - self._start_sequence_id[camera_id]
+
                     is_keyframe: bool = res.GetNumberOfSkippedImages() > 0
-                    # Put the newly allocated converted image into our queue/pipe for the Producer to consume.
-                    with res.GetArrayZeroCopy() as frame_buffer:
-                        self._queue.put(
-                            (
-                                camera_id,
-                                frame_buffer[None],
-                                is_keyframe,
-                                frame_index,
-                                timestamp,
-                                sequence_id,
-                                toa_s,
-                            )
-                        )
-                    # Release the buffer for Pylon to reuse for the next frame.
+
+                    # Copy to owned Python array and immediately release Pylon DMA buffer
+                    frame = res.Array.copy()[None]
                     res.Release()
+
+                    # 0 copies: pointer transfer to queue
+                    self._queue.put(
+                        (
+                            camera_id,
+                            frame,
+                            is_keyframe,
+                            frame_index,
+                            timestamp,
+                            sequence_id,
+                            toa_s,
+                        )
+                    )
             else:
-                raise RuntimeError("Grab Failed")
+                res.Release()
         except Exception as e:
-            pass
+            print(f"Error in OnImageGrabbed: {e}", flush=True)
 
     def get_frame(
-        self,
+        self, timeout: float = 0.05
     ) -> tuple[str, np.ndarray, bool, np.uint64, np.uint64, np.uint64, float] | None:
         try:
-            return self._queue.get(timeout=5)
+            return self._queue.get(timeout=timeout)
         except queue.Empty:
             return None
 
